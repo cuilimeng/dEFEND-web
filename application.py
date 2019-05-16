@@ -74,7 +74,7 @@ def check(_title):
     response = unirest.get(
         "https://api-hoaxy.p.rapidapi.com/articles?sort_by=relevant&use_lucene_syntax=true&query=" + url,
         headers={
-            "X-RapidAPI-Key": "6538644c4cmsh59dceccd01f70a8p110dc0jsn22d277456785"
+            "X-RapidAPI-Key": "API-KEY"
         }
     )
     articles = response.body['articles']
