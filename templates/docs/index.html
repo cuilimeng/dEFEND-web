@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#4188c9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="{{ url_for('static', filename='bitbug_favicon.ico') }}" type="image/x-icon"/>
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='bitbug_favicon.ico') }}" />
+    <!-- Generated: 2018-04-06 16:27:42 +0200 -->
+    <title>Introduction - Documentation - FOO - an explainable fake news detection tool</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
+    <script src="{{ url_for('static', filename='assets/js/require.min.js') }}"></script>
+    <script>
+      requirejs.config({
+          baseUrl: '..'
+      });
+    </script>
+    <!-- Dashboard Core -->
+    <link href="{{ url_for('static', filename='assets/css/dashboard.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+    <!-- c3.js Charts Plugin -->
+    <link href="{{ url_for('static', filename='assets/plugins/charts-c3/plugin.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='assets/plugins/charts-c3/plugin.js') }}"></script>
+    <!-- Google Maps Plugin -->
+    <link href="{{ url_for('static', filename='assets/plugins/maps-google/plugin.css') }}" rel="stylesheet" />
+    <script src="{{ url_for('static', filename='assets/plugins/maps-google/plugin.js') }}"></script>
+    <!-- Input Mask Plugin -->
+    <script src="{{ url_for('static', filename='assets/plugins/input-mask/plugin.js') }}"></script>
+  </head>
+  <body class="">
+    <div class="page">
+      <div class="page-main">
+        <div class="header py-4">
+          <div class="container">
+            <div class="d-flex">
+              <a class="header-brand" href="./">
+                <img src="{{ url_for('static', filename='demo/brand/tabler.png') }}" class="header-brand-img" alt="tabler logo">
+              </a>
+              <!--<div class="d-flex order-lg-2 ml-auto">
+                <div class="nav-item d-none d-md-flex">
+                  <a href="https://github.com/tabler/tabler" class="btn btn-sm btn-outline-primary" target="_blank">Source code</a>
+                </div>
+              </div>-->
+              <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse" data-target="#headerMenuCollapse">
+                <span class="header-toggler-icon"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="header collapse d-lg-flex p-0" id="headerMenuCollapse">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg order-lg-first">
+                <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+                  <li class="nav-item">
+                    <a href="./" class="nav-link"><i class="fe fe-home"></i> Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{url_for('.foobar')}}" class="nav-link active"><i class="fe fe-file-text"></i> Documentation</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="my-3 my-md-5">
+          <div class="container">
+            <div class="page-header">
+              <h1 class="page-title">
+                Documentation
+              </h1>
+            </div>
+            <div class="row">
+              <div class="col-lg-3 order-lg-1 mb-4">
+                <!--<a href="https://tinyurl.com/ybl6gqrm" class="btn btn-block btn-primary mb-6">
+                  <i class="fe fe-github mr-2"></i>Browse source code
+                </a>-->
+                <!-- Getting started -->
+                <div class="list-group list-group-transparent mb-0">
+                  <a href="{{url_for('.foobar')}}" class="list-group-item list-group-item-action active"><span class="icon mr-3"><i class="fe fe-flag"></i></span>Introduction</a>
+                </div>
+                <!-- Components -->
+              </div>
+              <div class="col-lg-9">
+                <div class="card">
+                  <div class="card-body">
+                    <div class="text-wrap p-lg-6">
+                      <h2 class="mt-0 mb-4">Introduction</h2>
+                      <p>dEFEND is an explainable fake news detection tool which can exploit both news contents and user comments to jointly capture explainable top-<em>k</em> check-worthy sentences and user comments for fake news detection. It is developed by researchers from Pennsylvania State University and Arizona State University together.</p>
+                      <p>The dEFEND system consists of two major components as
+shown in Figure 1: a web-based user interface and a backend which integrates our fake news detection model. The
+backend consists of multiple components: (1) a database to
+store the pre-trained results as well as a crawler to extract
+unseen news and its comments, (2) the dEFEND algorithm module based on explainable deep learning fake news detection,
+which gives the detection result and explanations simultaneously and (3) an exploratory component that shows the
+propagation network of the news, trending and related news.</p>
+                      <p align="center"><img src="{{ url_for('static', filename='demo/websiteframework2.png') }}" alt="website framework" width="500"></p>
+                      <p align="center">Figure 1: dEFEND System Overview</p>
+                      <p>The explainable fake
+news detection algorithm of dEFEND consists of four parts
+as shown in Figure 2: (1) a news content encoder, (2) a
+user comment encoder, (3) a sentence-comment co-attention
+component, and (4) a fake news prediction component.</p>
+                      <p align="center"><img src="{{ url_for('static', filename='demo/algorithm.jpg') }}" alt="website framework" width="500"></p>
+                      <p align="center">Figure 2: dEFEND Algorithm</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="row">
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://www.psu.edu/">PSU</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://www.asu.edu/">ASU</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://hoaxy.iuni.iu.edu/">Hoaxy</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="http://visjs.org/">vis.js</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+              Suggestions and comments regarding our work are welcome.
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container">
+          <div class="row align-items-center flex-row-reverse">
+            <div class="col-auto ml-lg-auto">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item"><a href="{{url_for('.foobar')}}">Documentation</a></li>
+                  </ul>
+                </div>
+                <!--<div class="col-auto">
+                  <a href="https://tinyurl.com/ybl6gqrm" class="btn btn-outline-primary btn-sm">Source code</a>
+                </div>-->
+              </div>
+            </div>
+            <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
+              Copyright © 2019 <a href="{{url_for('.foobar')}}">dEFEND</a>. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

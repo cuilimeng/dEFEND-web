@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="Content-Language" content="en" />
+    <meta name="msapplication-TileColor" content="#2d89ef">
+    <meta name="theme-color" content="#4188c9">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <link rel="icon" href="/static/bitbug_favicon.ico" type="image/x-icon"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/static/bitbug_favicon.ico" />
+    <!-- Generated: 2018-04-06 16:27:42 +0200 -->
+    <title>Homepage - dEFEND - an explainable fake news detection tool</title>
+    <style type="text/css">
+
+    body {
+      font: 10pt arial;
+    }
+    #mynetwork {
+      width: 100%;
+      height: 300px;
+    }
+  </style>
+
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis-network.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script type="text/javascript">
+
+    var nodes = null;
+    var edges = null;
+    var network = null;
+
+    // Called when the Visualization API is loaded.
+    function draw() {
+      // get news article
+      url = 'https://api-hoaxy.p.rapidapi.com/articles?sort_by=relevant&use_lucene_syntax=true&query={{url|safe}}'
+      $.ajaxSetup({
+        type: 'GET',
+        async : false,
+        headers:{
+          'X-RapidAPI-Key': '6538644c4cmsh59dceccd01f70a8p110dc0jsn22d277456785'
+        },
+        success:function(data){
+          level = data;
+        }
+      });
+      $.get(url);
+      var num = level.num_of_entries;
+      var articles = level.articles;
+      
+      url = 'https://api-hoaxy.p.rapidapi.com/network?nodes_limit=1000&edges_limit=12500&ids=%5B'+articles[0].id
+      for (var i = 1; i < 5; i++) {
+        url += '%2C'+articles[i].id
+      }
+      url += '%5D'
+      $.get(url);
+
+      var num = level.num_of_entries;
+      var paths = level.edges;
+      ids = [];
+      edges = [];
+      for (var i = 0; i <200; i++) {
+        var from_userid = paths[i].from_user_screen_name;
+        if (ids.indexOf(from_userid)==-1) ids.push(from_userid);
+        
+        var to_userid = paths[i].to_user_screen_name;
+        if (ids.indexOf(to_userid)==-1) ids.push(to_userid);
+
+        edge = {from: from_userid, to: to_userid, arrows:'to'};
+        edges.push(edge);
+      }
+      nodes = [];
+      for (var i = 0; i <ids.length; i++) {
+        node = ids[i]
+        nodes.push({id: node, "label": node})
+      }
+      console.log(nodes)
+
+      var container = document.getElementById('mynetwork');
+      var data = {
+        nodes: nodes,
+        edges: edges
+      };
+      var options = {
+        font:{
+            size: 100,
+        },
+        nodes: {
+            size:10,
+            shape: 'dot',
+              color: {
+              background: '#006400'
+            },
+            font:{color:'#000000', "size": 10},
+        },
+      };
+      network = new vis.Network(container, data, options);
+	  $("#loading").fadeOut(9000);
+    }
+  </script>
+	<script type="text/javascript"> 
+    var tag=1;
+    function sortNumberAS(a, b)
+    {
+        return a - b    
+    }
+    function sortNumberDesc(a, b)
+    {
+        return b-a
+    }
+
+    function SortTable(obj){
+		var td2s=document.getElementsByName("td2");
+		var td0s=document.getElementsByName("td0");
+        var td1s=document.getElementsByName("td1");
+		var tdArray2=[];
+		var tdArray0=[];
+        var tdArray1=[];
+		for(var i=0;i<td2s.length;i++){
+            tdArray2.push(td2s[i].innerHTML);
+        }
+		for(var i=0;i<td0s.length;i++){
+            tdArray0.push(td0s[i].innerHTML);
+        }
+        for(var i=0;i<td1s.length;i++){
+            tdArray1.push(td1s[i].innerHTML.replace(/<[^>]+>/g,"").replace(/(^\s*)|(\s*$)/g, ""));
+        }
+		console.log(tdArray1)
+        var tds=document.getElementsByName("td"+obj.id.substr(2,1));
+        var columnArray=[];
+        for(var i=0;i<tds.length;i++){
+            columnArray.push(tds[i].innerHTML.replace(/<[^>]+>/g,"").replace(/(^\s*)|(\s*$)/g, ""));
+        }
+        var orginArray=[];
+        for(var i=0;i<columnArray.length;i++){
+            orginArray.push(columnArray[i]);
+        }
+        if(obj.className=="as"){
+            columnArray.sort(sortNumberAS);               //排序后的新值
+            obj.className="desc";
+        }else{
+            columnArray.sort(sortNumberDesc);               //排序后的新值
+            obj.className="as";
+        }
+
+
+        for(var i=0;i<columnArray.length;i++){
+            for(var j=0;j<orginArray.length;j++){
+                if(orginArray[j]==columnArray[i]){
+					document.getElementsByName("td2")[i].innerHTML=tdArray2[j];
+					document.getElementsByName("td0")[i].innerHTML=tdArray0[j];
+                    document.getElementsByName("td1")[i].innerHTML="<span class=\"badge badge-default\">"+tdArray1[j]+"</span>";
+                    orginArray[j]=null;
+                    break;
+                }
+            }
+        }
+    }
+</script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i,500,500i,600,600i,700,700i&amp;subset=latin-ext">
+    <script src="/static/assets/js/require.min.js"></script>
+    <script>
+      requirejs.config({
+          baseUrl: '.'
+      });
+    </script>
+    <!-- Dashboard Core -->
+    <link href="/static/assets/css/dashboard.css" rel="stylesheet" />
+    <script src="/static/assets/js/dashboard.js"></script>
+    <!-- c3.js Charts Plugin -->
+    <link href="/static/assets/plugins/charts-c3/plugin.css" rel="stylesheet" />
+    <script src="/static/assets/plugins/charts-c3/plugin.js"></script>
+    <!-- Google Maps Plugin -->
+    <link href="/static/assets/plugins/maps-google/plugin.css" rel="stylesheet" />
+    <script src="/static/assets/plugins/maps-google/plugin.js"></script>
+    <!-- Input Mask Plugin -->
+    <script src="/static/assets/plugins/input-mask/plugin.js"></script>
+  </head>
+  <body class="" onload="draw()">
+    <div class="page">
+      <div class="page-main">
+        <div class="header py-4">
+          <div class="container">
+            <div class="d-flex">
+              <a class="header-brand" href="./">
+                <img src="/static/demo/brand/tabler.png" class="header-brand-img" alt="tabler logo">
+              </a>
+              <!--<div class="d-flex order-lg-2 ml-auto">
+                <div class="nav-item d-none d-md-flex">
+                  <a href="https://tinyurl.com/ybl6gqrm" class="btn btn-sm btn-outline-primary" target="_blank">Source code</a>
+                </div>
+              </div>-->
+              <a href="#" class="header-toggler d-lg-none ml-3 ml-lg-0" data-toggle="collapse" data-target="#headerMenuCollapse">
+                <span class="header-toggler-icon"></span>
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="header collapse d-lg-flex p-0" id="headerMenuCollapse">
+          <div class="container">
+            <div class="row align-items-center">
+              <div class="col-lg order-lg-first">
+                <ul class="nav nav-tabs border-0 flex-column flex-lg-row">
+                  <li class="nav-item">
+                    <a href="./" class="nav-link active"><i class="fe fe-home"></i> Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="{{url_for('.foobar')}}" class="nav-link"><i class="fe fe-file-text"></i> Documentation</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="my-3 my-md-5">
+          <div class="container">
+            <div class="page-header">
+              <h1 class="page-title">
+                dEFEND <b>Fact-checking</b>
+              </h1>
+            </div>
+            <div class="row">
+            	<div class="col-12">
+                	<form action="/demo" method="post" class="card">
+                        <div class="card-body">
+                        	<div class="row">
+                            	<div class="card-body d-flex flex-column">
+                                	<div class="form-group">
+                                    	<label class="form-label">Enter the Twitter URL or news title below to check whether it is a fake news and why.</label>
+                                        <div class="input-group">
+                                        <input type="text" class="form-control" name="url" value="{{title|safe}}">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-primary" onClick="draw()">Go!</button>
+                                            </div>
+                                        </div>
+                        			</div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row row-cards row-deck">
+              <div class="col-sm-6 col-lg-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Trending News</h4>
+                  </div>
+                  <table class="table card-table">
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Pope Calls for World Wide Gun Confiscation Except for the UN', _anchor='exactlocation') }}">Pope Calls for World Wide Gun Confiscation Except for the UN</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Red Hen Owner Just Issued Sick Threat To Sarah Sanders After Biz Was Destroyed By Booting Her', _anchor='exactlocation') }}">Red Hen Owner Just Issued Sick Threat To Sarah Sanders After Biz Was Destroyed By Booting Her</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Senate Report Admits Clinton ‘Gifted’ Children To Human Traffickers', _anchor='exactlocation') }}">Senate Report Admits Clinton ‘Gifted’ Children To Human Traffickers</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Iranian Official Drops Bombshell: Obama Secretly Gave Citizenship to 2500 Iranians as Part of Nuke Deal', _anchor='exactlocation') }}">Iranian Official Drops Bombshell: Obama Secretly Gave Citizenship to 2500 Iranians as Part of Nuke Deal</a></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-sm-6 col-lg-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Top Claims</h2>
+                  </div>
+                  <table class="table card-table">
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Actor Brad Pitt: \'Trump Is Not My President, We Have No Future With This...\'', _anchor='exactlocation') }}">Actor Brad Pitt: 'Trump Is Not My President, We Have No Future With This...'</a></form></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Mike Pence: “Allowing Rape Victims To Have Abortions Will Lead To Women Trying To Get Raped”', _anchor='exactlocation') }}">Mike Pence: “Allowing Rape Victims To Have Abortions Will Lead To Women Trying To Get Raped”</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Putin says: ‘Pope Francis Is Not A Man Of God’ | Must-See !!', _anchor='exactlocation') }}">Putin says: ‘Pope Francis Is Not A Man Of God’ | Must-See !!</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Tom Price: “It’s Better For Our Budget If Cancer Patients Die More Quickly”', _anchor='exactlocation') }}">Tom Price: “It’s Better For Our Budget If Cancer Patients Die More Quickly”</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Miley Cyrus: \'Donald Trump Is a F--king Nightmare\'', _anchor='exactlocation') }}">Miley Cyrus: 'Donald Trump Is a F--king Nightmare'</a></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+              <div class="col-md-6 col-lg-4">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Related News</h2>
+                  </div>
+                  <table class="table card-table">
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Obama’s Health Care Speech to Congress', _anchor='exactlocation') }}">Obama’s Health Care Speech to Congress</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Patient Protection and Affordable Care Act', _anchor='exactlocation') }}">Patient Protection and Affordable Care Act</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Jimmy Carter: “Medical Marijuana Cured My Cancer”', _anchor='exactlocation') }}">Jimmy Carter: “Medical Marijuana Cured My Cancer”</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Key Facts: Race, Ethnicity and Medical Care', _anchor='exactlocation') }}">Key Facts: Race, Ethnicity and Medical Care</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Rebooting: You and your doctor under Obamacare', _anchor='exactlocation') }}">Rebooting: You and your doctor under Obamacare</a></td>
+                    </tr>
+                    <tr>
+                      <td><a href="{{ url_for('link',name='Melania Trump undergoes kidney surgery at Walter Reed medical center', _anchor='exactlocation') }}">Melania Trump undergoes kidney surgery at Walter Reed medical center</a></td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <section id="exactlocation">
+            <div class="row row-cards row-deck">
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">News Content</h3>
+                  </div>
+                  {{label|safe}}
+                  <div class="card-body o-auto" style="height: 30rem">
+                    <h4>{{title|safe}}</h4>
+                    <div class="text-muted">{{newscontent|safe}}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-6">
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Propagation Network</h2>
+                  </div>
+                  <div class="card-body">
+                  <div class="dimmer active">
+                  <div id="loading" class="loader"></div>
+                  	<div id="mynetwork"></div>
+                  </div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-header">
+                    <h2 class="card-title">Sentences</h2>
+                  </div>
+                  <div class="table-responsive" style="height: 300px;">
+                  <table class="table table-hover card-table">
+					  <tr><th id="th2" onclick="SortTable(this)" class="as" style="cursor: pointer;" width="70">No. <i class="fa fa-sort"></i></th><th>Sentence</th><th id="th1" onclick="SortTable(this)" class="des" style="cursor: pointer;" width="170">Explainable Score <em class="fa fa-sort"></em></th></tr>
+                      {{sentence|safe}}
+                  </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row row-cards">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h3 class="card-title">Comments</h3>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table card-table table-striped table-vcenter">
+                      <thead>
+                        <tr>
+                          <th>User</th>
+                          <th>Comment</th>
+                          <th>Explainable Score</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                          {{comment|safe}}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="row">
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://www.psu.edu/">PSU</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://www.asu.edu/">ASU</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="https://hoaxy.iuni.iu.edu/">Hoaxy</a></li>
+                  </ul>
+                </div>
+                <div class="col-6 col-md-3">
+                  <ul class="list-unstyled mb-0">
+                    <li><a href="http://visjs.org/">vis.js</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-4 mt-4 mt-lg-0">
+              Suggestions and comments regarding our work are welcome.
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer">
+        <div class="container">
+          <div class="row align-items-center flex-row-reverse">
+            <div class="col-auto ml-lg-auto">
+              <div class="row align-items-center">
+                <div class="col-auto">
+                  <ul class="list-inline list-inline-dots mb-0">
+                    <li class="list-inline-item"><a href="{{url_for('.foobar')}}">Documentation</a></li>
+                  </ul>
+                </div>
+                <!--<div class="col-auto">
+                  <a href="https://tinyurl.com/ybl6gqrm" class="btn btn-outline-primary btn-sm">Source code</a>
+                </div>-->
+              </div>
+            </div>
+            <div class="col-12 col-lg-auto mt-3 mt-lg-0 text-center">
+              Copyright © 2019 <a href="{{url_for('.foobar')}}">dEFEND</a>. All rights reserved.
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
