@@ -9,6 +9,7 @@ from keras import backend as K
 from keras.utils import CustomObjectScope
 from keras.engine.topology import Layer
 from keras import initializers
+import dill
 
 from glove import load_glove_embedding
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, roc_auc_score
@@ -45,8 +46,8 @@ class Metrics(Callback):
         self.val_precisions.append(_val_precision)
         self.val_auc.append(_val_auc)
         self.val_acc.append(_val_acc)
-        print "Epoch: %d - val_accuracy: % f - val_precision: % f - val_recall % f val_f1: %f auc: %f" % (
-            epoch, _val_acc, _val_precision, _val_recall, _val_f1, _val_auc)
+        print("Epoch: %d - val_accuracy: % f - val_precision: % f - val_recall % f val_f1: %f auc: %f" % (
+            epoch, _val_acc, _val_precision, _val_recall, _val_f1, _val_auc))
         self.log_file.write(
             "Epoch: %d - val_accuracy: % f - val_precision: % f - val_recall % f val_f1: %f auc: %f\n" % (epoch,
                                                                                                           _val_acc,
@@ -139,7 +140,7 @@ class AttLayer(Layer):
         if mask is not None:
             # Cast the mask to floatX to avoid float64 upcasting in theano
             ait *= K.cast(mask, K.floatx())
-        print ait
+        print(ait)
         ait /= K.cast(K.sum(ait, axis=1, keepdims=True) + K.epsilon(), K.floatx())
         ait = K.expand_dims(ait)
         weighted_input = x * ait
@@ -267,6 +268,7 @@ class Defend():
             self.co_attention_model = self.model.get_layer('co-attention')
             tokenizer_path = os.path.join(
                 saved_model_dir, self._get_tokenizer_filename(saved_model_filename))
+            dill._dill._reverse_typemap['ObjectType'] = object
             tokenizer_state = pickle.load(open(tokenizer_path, "rb"))
             self.tokenizer = tokenizer_state['tokenizer']
             self.MAX_SENTENCE_COUNT = tokenizer_state['maxSentenceCount']

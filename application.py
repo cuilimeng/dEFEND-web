@@ -2,17 +2,20 @@
 from __future__ import unicode_literals
 from flask import Flask, render_template, request, redirect, url_for
 import urllib
-import unirest
+#import unirest #In an attempt to update the library, unirest requires Python 2.7
+                #which is getting updated to Python 3 which means we can now use requests instead
 import difflib
-from goose import Goose
-import io, os, csv
-import sys
+from goose3 import Goose
+import io
+import os
+import sys, csv
 import tensorflow as tf
 import requests
 import json
 import re
-reload(sys)
-sys.setdefaultencoding('utf8')
+#import importlib #Used to reload modules
+#importlib.reload(sys)
+#sys.setdefaultencoding('utf8')
 csv.field_size_limit(sys.maxsize)
 
 import defend
@@ -34,24 +37,24 @@ graph = tf.get_default_graph()
 
 newsdic = {}
 
-file_title = './static/' + 'politifact' + '_title_no_ignore.tsv'
+file_title = './static/' + platform + '_title_no_ignore.tsv'
 with open(file_title) as tsvfile:
-    reader = csv.reader(tsvfile, delimiter=str(u'\t').encode('utf-8'))
+    reader = csv.reader(tsvfile, delimiter=str(u'\t'))
     for row in reader:
         id = row[0]
         newsdic[id] = {}
         newsdic[row[0]]['title'] = row[1]
 
-file_comment_our = './static/' + 'politifact' + '_comment_no_ignore.tsv'
+file_comment_our = './static/' + platform + '_comment_no_ignore.tsv'
 with open(file_comment_our) as tsvfile:
-    reader = csv.reader(tsvfile, delimiter=str(u'\t').encode('utf-8'))
+    reader = csv.reader(tsvfile, delimiter=str(u'\t'))
     for row in reader:
         if row[0] in newsdic.keys():
             newsdic[row[0]]['comment_our'] = row[1].split("::")
 
-file_content = './static/' + 'politifact' + '_content_no_ignore.tsv'
+file_content = './static/' + platform + '_content_no_ignore.tsv'
 with open(file_content) as tsvfile:
-    reader = csv.reader(tsvfile, delimiter=str(u'\t').encode('utf-8'))
+    reader = csv.reader(tsvfile, delimiter=str(u'\t'))
     for row in reader:
         if row[0] in newsdic.keys():
             newsdic[row[0]]['content'] = row[2]
@@ -70,16 +73,17 @@ def url2str(_title):
 def check(_title):
     newtitle = url2str(_title)
     url = newtitle
-    url = urllib.quote_plus(url)
-    response = unirest.get(
+    url = urllib.parse.quote_plus(url)
+    response = requests.get(
         "https://api-hoaxy.p.rapidapi.com/articles?sort_by=relevant&use_lucene_syntax=true&query=" + url,
         headers={
             "X-RapidAPI-Key": "API-KEY"
         }
-    )
-    articles = response.body['articles']
-    canonical_url = response.body['articles'][0]['canonical_url']
-    title = response.body['articles'][0]['title']
+    ) #TODO: Replace API-KEY with a variable with file content with an api key
+    a = response.json()
+    articles = a['articles']
+    canonical_url = a['articles'][0]['canonical_url']
+    title = a['articles'][0]['title']
     score = 0
     for a in articles:
         tmpscore = difflib.SequenceMatcher(None, a['title'], newtitle).quick_ratio()
@@ -109,7 +113,7 @@ def check(_title):
             #             round(float(comment_our[i].split('\t')[1].replace('\n', '')), 4)) + "</td></tr>"
             comment = ''
             sentence = ''
-            article = "<p><strong>Source: </strong><a href=\"" + canonical_url + "\">" + canonical_url + "</a></p>" + '<p>' + newsdic[key]['content'].decode('utf-8') + '</p>'
+            article = "<p><strong>Source: </strong><a href=\"" + canonical_url + "\">" + canonical_url + "</a></p>" + '<p>' + newsdic[key]['content'] + '</p>'
             if newsdic[key]['label'] == "1":
                 label = 1
 

@@ -4,10 +4,15 @@ dEFEND is an explainable fake news detection tool which can exploit both news co
 
 ## How to run
 
-Note: This code is written in Python 2.
+Note: This code is written in Python 3.
 
 Replace "API-KEY" in __application.py__ with your own Rapid API Key.
+
 ```
 unzip static/saved_models/politifact_Defend_model.h5.zip
-python application.py 
+python application.py
 ```
+
+## Requirements
+
+See __requirements.txt__.
