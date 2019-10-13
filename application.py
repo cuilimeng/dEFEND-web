@@ -212,4 +212,4 @@ def foobar():
 
 
 if __name__ == '__main__':
-    application.run(debug = False, threaded = False)
+    application.run(debug=False, threaded=False, host='0.0.0.0', port=8080)
