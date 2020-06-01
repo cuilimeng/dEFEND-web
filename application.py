@@ -64,8 +64,19 @@ with open(file_content) as tsvfile:
 def url2str(_title):
     newtitle = _title
     if _title.startswith('twitter.com') or _title.startswith('https://twitter.com'):
-        url = json.loads(requests.get("https://publish.twitter.com/oembed?url=" + _title.encode("utf8")).content)
+        url = json.loads(requests.get("https://publish.twitter.com/oembed?url=" + _title).content)
         url = url['html']
+
+        #remove special characters that will cause it to crash
+        remove_emojis = re.compile("["
+                                   u"\U0001F600-\U0001F64F"  # emoticons
+                                   u"\U0001F300-\U0001F5FF"  # symbols & pictographs
+                                   u"\U0001F680-\U0001F6FF"  # transport & map symbols
+                                   u"\U0001F1E0-\U0001F1FF"  # flags (iOS)
+                                   "]+", flags=re.UNICODE)
+        url = remove_emojis.sub(r'', url)
+        url = url.replace('*', ' ')
+
         newtitle = re.sub(r"<([^>]*)>", "", url)
     return newtitle.encode('ascii', 'ignore')[:50]
 
