@@ -176,7 +176,7 @@ def check(_title):
         else:
             image = "<img src=\"/static/demo/brand/ht.jpg\" class=\"header-brand-img\" alt=\"tabler logo\">"
         label = "<div class=\"card-alert alert alert-danger mb-0\">\
-                    Disputed by FOO with " + str(confidence) + "% confidence  \
+                    Disputed by dEFEND with " + str(confidence) + "% confidence  \
                     <a href=\"#\" onClick=\"alert(\'We have received your feedback. Thank you!\')\" class=\"btn outline-info\"><i class=\"fe fe-flag\"></i> Report detection error</a>\
                     </div>"
     else:
@@ -187,7 +187,7 @@ def check(_title):
         else:
             image = "<img src=\"/static/demo/brand/ht.jpg\" class=\"header-brand-img\" alt=\"tabler logo\">"
         label = "<div class=\"card-alert alert alert-success mb-0\">\
-                    Verified by FOO with " + str(confidence) + "% confidence  \
+                    Verified by dEFEND with " + str(confidence) + "% confidence  \
                     <a href=\"#\" onClick=\"alert(\'We have received your feedback. Thank you!\')\" class=\"btn outline-info\"><i class=\"fe fe-flag\"></i> Report detection error</a>\
                     </div>"
 
