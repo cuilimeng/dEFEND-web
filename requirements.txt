@@ -24,7 +24,7 @@ Markdown==3.1.1
 MarkupSafe==1.1.1
 mock==3.0.5
 nltk==3.4.1
-numpy==1.16.3
+numpy==1.22.0
 Pillow==6.0.0
 protobuf==3.7.1
 python-dateutil==2.8.0
